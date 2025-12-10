@@ -894,8 +894,14 @@ def main():
                 
                 selected_well_id = selected_well_display.split(' - ')[0]
                 
-                # Well details
-                well_info = df_filtered[df_filtered['Station_Code'] == selected_well_id].iloc[0]
+                # Well details - check if well exists in filtered data
+                well_matches = df_filtered[df_filtered['Station_Code'] == selected_well_id]
+                
+                if len(well_matches) == 0:
+                    st.error("Selected well not found in filtered data. Please adjust filters.")
+                    well_info = None
+                else:
+                    well_info = well_matches.iloc[0]
                 
                 st.markdown("### Well Information")
                 st.markdown(f"""
