@@ -903,6 +903,12 @@ def main():
                 else:
                     well_info = well_matches.iloc[0]
                 
+                if len(well_matches) == 0:
+                    st.error("Selected well not found in filtered data. Please adjust filters.")
+                    well_info = None
+                else:
+                    well_info = well_matches.iloc[0]
+                
                 st.markdown("### Well Information")
                 st.markdown(f"""
                 | Property | Value |
