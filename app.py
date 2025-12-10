@@ -1,26 +1,3 @@
-# ============================================================
-# CHILE GROUNDWATER ASSESSMENT - INTERACTIVE DASHBOARD
-# Streamlit Application for Data Visualization and Analysis
-# Bilingual Support: Spanish (default) / English
-# ============================================================
-# 
-# FILE STRUCTURE FOR GITHUB:
-# ├── app.py (this file)
-# ├── requirements.txt
-# ├── .streamlit/
-# │   └── config.toml
-# ├── data/
-# │   ├── Groundwater_Trend_Analysis_Complete.xlsx
-# │   ├── Comparacion_Censo2017_vs_Censo2024.xlsx
-# │   ├── niveles_estaticos_pozos_historico.xlsx
-# │   ├── FINAL_VALIDOS_En_Chile_ultimo.xlsx
-# │   ├── Censo_2017_pozos_5_meters.xlsx
-# │   ├── Censo_2024_pozos_5_meters.xlsx
-# │   └── shapefiles/ (optional, can use online sources)
-# └── README.md
-#
-# ============================================================
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -35,21 +12,12 @@ import os
 from datetime import datetime
 from scipy import stats
 
-# ============================================================
-# LANGUAGE CONFIGURATION
-# ============================================================
-
 TRANSLATIONS = {
     'es': {
-        # Page config
         'page_title': "Evaluación de Aguas Subterráneas de Chile",
         'page_icon': "💧",
-        
-        # Main headers
         'main_header': "💧 Panel de Evaluación de Aguas Subterráneas de Chile",
         'sub_header': "Análisis Integral de Extracción, Agotamiento y Proyecciones",
-        
-        # Sidebar
         'controls': "🔧 Controles",
         'data_source': "📂 Fuente de Datos",
         'select_data_source': "Seleccionar fuente de datos:",
@@ -76,15 +44,11 @@ TRANSLATIONS = {
         'language': "🌐 Idioma",
         'spanish': "Español",
         'english': "English",
-        
-        # Tabs
         'tab_overview': "📊 Resumen",
         'tab_map': "🗺️ Mapa Interactivo",
         'tab_well_analysis': "📈 Análisis de Pozos",
         'tab_spatial': "🏛️ Agregación Espacial",
         'tab_data': "📋 Tablas de Datos",
-        
-        # Tab 1: Overview
         'national_summary': "Estadísticas Resumen Nacional",
         'registered_wells_dga': "Pozos Registrados (DGA)",
         'unregistered_wells': "Pozos No Registrados",
@@ -134,8 +98,6 @@ TRANSLATIONS = {
             "Durante la megasequía de Chile cuando se esperaba conservación",
             "Zonas periurbanas muestran aumentos >80%"
         ],
-        
-        # Tab 2: Map
         'interactive_map': "Mapa Interactivo de Pozos",
         'disclaimers_title': "⚠️ Descargos de Responsabilidad Importantes",
         'disclaimer_water_rights': "<b>Derechos de Agua DGA:</b> Las ubicaciones de los derechos de agua fueron procesadas mediante una unión basada en el código de expediente. Puede haber errores en la geolocalización de algunos puntos.",
@@ -157,8 +119,6 @@ TRANSLATIONS = {
         'show_census_2024_help': "Mostrar ubicaciones de pozos Censo 2024",
         'points': "puntos",
         'no_data_available': "No hay datos disponibles. Por favor cargue datos o ajuste los filtros.",
-        
-        # Tab 3: Well Analysis
         'individual_well_analysis': "Análisis Individual de Pozos",
         'select_well': "Seleccionar Pozo",
         'filter_by_region': "Filtrar por Región:",
@@ -195,8 +155,6 @@ TRANSLATIONS = {
         'altitude_m': "Altitud (m)",
         'download_well_data': "📥 Descargar Datos del Pozo como CSV",
         'well_history_not_available': "Datos de historial de pozos no disponibles. Asegúrese de que 'niveles_estaticos_pozos_historico.xlsx' esté en la carpeta de datos.",
-        
-        # Tab 4: Spatial Aggregation
         'spatial_aggregation': "Análisis de Agregación Espacial",
         'select_aggregation': "Seleccionar nivel de agregación:",
         'decline_rates': "Tasas de Descenso",
@@ -205,8 +163,6 @@ TRANSLATIONS = {
         'mean_decline_rate': "Tasa Media de Descenso (m/año)",
         'top_20_shacs': "Top 20 SHACs Críticos por Tasa de Descenso",
         'top_15_comunas': "Top 15 Comunas por Tasa de Descenso",
-        
-        # Tab 5: Data Tables
         'data_tables_export': "Tablas de Datos y Exportación",
         'select_data_table': "Seleccionar tabla de datos:",
         'all_wells': "Todos los Pozos",
@@ -217,8 +173,6 @@ TRANSLATIONS = {
         'search': "🔍 Buscar:",
         'download_csv': "📥 Descargar como CSV",
         'well_history_not_loaded': "Datos de historial de pozos no cargados.",
-        
-        # Footer disclaimers
         'footer_disclaimers_title': "📋 Descargos de Responsabilidad y Notas Metodológicas",
         'footer_disclaimer_water_rights': "<b>Ubicaciones de Derechos de Agua DGA:</b> Las coordenadas geográficas para los derechos de agua DGA fueron procesadas mediante una unión basada en el código de expediente. Debido a la naturaleza de este proceso de unión, puede haber errores en la geolocalización de algunos puntos. Los usuarios deben verificar las coordenadas para aplicaciones críticas.",
         'footer_disclaimer_census': "<b>Ubicaciones de Pozos Censo 2017 y 2024:</b> Las ubicaciones de pozos mostradas para el Censo 2017 y Censo 2024 fueron generadas usando la herramienta 'Crear Puntos Aleatorios' en ArcGIS Pro. Como esta herramienta coloca puntos aleatoriamente dentro de las unidades geográficas censales, los puntos pueden estar ubicados en áreas no realistas, especialmente al evaluar áreas grandes. Se usó un radio de 5 metros entre puntos artificiales de pozos; aumentar el radio resultaría en no poder ajustar todos los pozos debido a restricciones de densidad. El Censo 2024 solo tiene resolución a nivel regional, mientras que el Censo 2017 tiene resolución de manzana/rural/urbano. Por lo tanto, el Censo 2017 es más útil para detectar la densidad y ubicación de hogares con pozos a mayor resolución.",
@@ -227,8 +181,6 @@ TRANSLATIONS = {
         'paper_link_text': "Para metodología completa y análisis detallado, por favor consulte la publicación científica asociada:",
         'paper_coming_soon': "[Enlace al artículo - Próximamente]",
         'footer_credits': "Data Sources: DGA Consolidado Nacional (2025), INE Censo 2017 & 2024<br>Desarrollado por Colorado School of Mines",
-        
-        # Map legend
         'layer_legend': "Leyenda de Capas",
         'high_decline': "Alto Descenso",
         'moderate': "Moderado",
@@ -237,8 +189,6 @@ TRANSLATIONS = {
         'water_rights_legend': "Derechos de Agua",
         'census_2017_legend': "Censo 2017",
         'census_2024_legend': "Censo 2024",
-        
-        # Popup content
         'popup_shac': "SHAC",
         'popup_region': "Región",
         'popup_records': "Registros",
@@ -252,8 +202,6 @@ TRANSLATIONS = {
         'popup_water_right': "💧 Derecho de Agua",
         'popup_expediente': "Expediente",
         'popup_annual_flow': "Caudal Anual",
-        
-        # Plot labels
         'observations': "Observaciones",
         'linear_trend': "Tendencia Lineal",
         'year': "Año",
@@ -263,8 +211,6 @@ TRANSLATIONS = {
         'stable_status': "➡️ Estable",
         'trend_label': "Tendencia",
         'status_label': "Estado",
-        
-        # Misc
         'all': "Todos",
         'property': "Propiedad",
         'value': "Valor",
@@ -273,15 +219,10 @@ TRANSLATIONS = {
     },
     
     'en': {
-        # Page config
         'page_title': "Chile Groundwater Assessment",
         'page_icon': "💧",
-        
-        # Main headers
         'main_header': "💧 Chile Groundwater Assessment Dashboard",
         'sub_header': "Comprehensive Analysis of Extraction, Depletion, and Projections",
-        
-        # Sidebar
         'controls': "🔧 Controls",
         'data_source': "📂 Data Source",
         'select_data_source': "Select data source:",
@@ -308,15 +249,11 @@ TRANSLATIONS = {
         'language': "🌐 Language",
         'spanish': "Español",
         'english': "English",
-        
-        # Tabs
         'tab_overview': "📊 Overview",
         'tab_map': "🗺️ Interactive Map",
         'tab_well_analysis': "📈 Well Analysis",
         'tab_spatial': "🏛️ Spatial Aggregation",
         'tab_data': "📋 Data Tables",
-        
-        # Tab 1: Overview
         'national_summary': "National Summary Statistics",
         'registered_wells_dga': "Registered Wells (DGA)",
         'unregistered_wells': "Unregistered Wells",
@@ -366,8 +303,6 @@ TRANSLATIONS = {
             "During Chile's megadrought when conservation expected",
             "Peri-urban zones show >80% increases"
         ],
-        
-        # Tab 2: Map
         'interactive_map': "Interactive Well Map",
         'disclaimers_title': "⚠️ Important Disclaimers",
         'disclaimer_water_rights': "<b>DGA Water Rights:</b> The water rights locations were processed by performing a join based on the expediente code. There may be errors in the geolocation of some points.",
@@ -389,8 +324,6 @@ TRANSLATIONS = {
         'show_census_2024_help': "Show Census 2024 well locations",
         'points': "points",
         'no_data_available': "No data available. Please load data or adjust filters.",
-        
-        # Tab 3: Well Analysis
         'individual_well_analysis': "Individual Well Analysis",
         'select_well': "Select Well",
         'filter_by_region': "Filter by Region:",
@@ -427,8 +360,6 @@ TRANSLATIONS = {
         'altitude_m': "Altitude (m)",
         'download_well_data': "📥 Download Well Data as CSV",
         'well_history_not_available': "Well history data not available. Please ensure 'niveles_estaticos_pozos_historico.xlsx' is in the data folder.",
-        
-        # Tab 4: Spatial Aggregation
         'spatial_aggregation': "Spatial Aggregation Analysis",
         'select_aggregation': "Select aggregation level:",
         'decline_rates': "Decline Rates",
@@ -437,8 +368,6 @@ TRANSLATIONS = {
         'mean_decline_rate': "Mean Decline Rate (m/year)",
         'top_20_shacs': "Top 20 Critical SHACs by Decline Rate",
         'top_15_comunas': "Top 15 Comunas by Decline Rate",
-        
-        # Tab 5: Data Tables
         'data_tables_export': "Data Tables & Export",
         'select_data_table': "Select data table:",
         'all_wells': "All Wells",
@@ -449,8 +378,6 @@ TRANSLATIONS = {
         'search': "🔍 Search:",
         'download_csv': "📥 Download as CSV",
         'well_history_not_loaded': "Well history data not loaded.",
-        
-        # Footer disclaimers
         'footer_disclaimers_title': "📋 Data Disclaimers & Methodology Notes",
         'footer_disclaimer_water_rights': "<b>DGA Water Rights Locations:</b> The geographic coordinates for DGA water rights were processed by performing a join based on the expediente code. Due to the nature of this join process, there may be errors in the geolocation of some points. Users should verify coordinates for critical applications.",
         'footer_disclaimer_census': "<b>Census 2017 & 2024 Well Locations:</b> The well locations shown for Census 2017 and Census 2024 were generated using the 'Create Random Points' tool in ArcGIS Pro. Since this tool plots values randomly within census geographic units, points may be located in unrealistic areas, especially when assessing larger areas. A 5-meter radius between artificial well points was used; increasing the radius would result in not being able to fit all wells due to density constraints. Census 2024 has regional-level resolution only, while Census 2017 has block/rural/urban resolution. Therefore, Census 2017 is more useful for detecting the density and location of homes with wells at higher resolution.",
@@ -459,8 +386,6 @@ TRANSLATIONS = {
         'paper_link_text': "For complete methodology and detailed analysis, please refer to the associated scientific publication:",
         'paper_coming_soon': "[Link to paper - Coming Soon]",
         'footer_credits': "Data Sources: DGA Consolidado Nacional (2025), INE Census 2017 & 2024<br>Developed by Colorado School of Mines",
-        
-        # Map legend
         'layer_legend': "Layer Legend",
         'high_decline': "High Decline Wells",
         'moderate': "Moderate Decline",
@@ -469,8 +394,6 @@ TRANSLATIONS = {
         'water_rights_legend': "Water Rights",
         'census_2017_legend': "Census 2017",
         'census_2024_legend': "Census 2024",
-        
-        # Popup content
         'popup_shac': "SHAC",
         'popup_region': "Region",
         'popup_records': "Records",
@@ -484,8 +407,6 @@ TRANSLATIONS = {
         'popup_water_right': "💧 Water Right",
         'popup_expediente': "Expediente",
         'popup_annual_flow': "Annual Flow",
-        
-        # Plot labels
         'observations': "Observations",
         'linear_trend': "Linear Trend",
         'year': "Year",
@@ -495,8 +416,6 @@ TRANSLATIONS = {
         'stable_status': "➡️ Stable",
         'trend_label': "Trend",
         'status_label': "Status",
-        
-        # Misc
         'all': "All",
         'property': "Property",
         'value': "Value",
@@ -507,19 +426,13 @@ TRANSLATIONS = {
 
 
 def get_text(key, lang='es'):
-    """Get translated text for a given key"""
     return TRANSLATIONS.get(lang, TRANSLATIONS['es']).get(key, key)
 
 
 def t(key):
-    """Shorthand function to get translated text using session state language"""
     lang = st.session_state.get('language', 'es')
     return get_text(key, lang)
 
-
-# ============================================================
-# PAGE CONFIGURATION
-# ============================================================
 st.set_page_config(
     page_title="Chile Groundwater Assessment / Evaluación de Aguas Subterráneas",
     page_icon="💧",
@@ -528,32 +441,14 @@ st.set_page_config(
     menu_items={
         'Get Help': 'https://github.com/yourusername/chile-groundwater',
         'Report a bug': 'https://github.com/yourusername/chile-groundwater/issues',
-        'About': """
-        # Chile Groundwater Assessment Dashboard
-        # Panel de Evaluación de Aguas Subterráneas de Chile
-        
-        This interactive dashboard presents findings from a comprehensive 
-        assessment of Chilean groundwater resources.
-        
-        Este panel interactivo presenta hallazgos de una evaluación 
-        integral de los recursos de aguas subterráneas de Chile.
-        
-        **Authors / Autores**: [Your Name]
-        **Institution / Institución**: Colorado School of Mines
-        """
     }
 )
 
-# Initialize session state for language
 if 'language' not in st.session_state:
     st.session_state.language = 'es'
 
-# ============================================================
-# CUSTOM CSS STYLING
-# ============================================================
 st.markdown("""
 <style>
-    /* Main header styling */
     .main-header {
         font-size: 2.5rem;
         font-weight: bold;
@@ -564,7 +459,6 @@ st.markdown("""
         margin-bottom: 1rem;
     }
     
-    /* Subheader styling */
     .sub-header {
         font-size: 1.2rem;
         color: #4a4a6a;
@@ -573,7 +467,6 @@ st.markdown("""
         margin-bottom: 2rem;
     }
     
-    /* Metric card styling */
     .metric-card {
         background-color: white;
         border-radius: 10px;
@@ -593,7 +486,6 @@ st.markdown("""
         color: #666;
     }
     
-    /* Critical alert box */
     .critical-box {
         background-color: #ffebee;
         border-left: 4px solid #d32f2f;
@@ -602,7 +494,6 @@ st.markdown("""
         margin: 1rem 0;
     }
     
-    /* Success box */
     .success-box {
         background-color: #e8f5e9;
         border-left: 4px solid #4caf50;
@@ -611,7 +502,6 @@ st.markdown("""
         margin: 1rem 0;
     }
     
-    /* Disclaimer box */
     .disclaimer-box {
         background-color: #fff3e0;
         border-left: 4px solid #ff9800;
@@ -621,25 +511,17 @@ st.markdown("""
         font-size: 0.85rem;
     }
     
-    /* Hide Streamlit branding */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     
-    /* Sidebar styling */
     .css-1d391kg {
         background-color: #f8f9fa;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# ============================================================
-# DATA LOADING FUNCTIONS
-# ============================================================
-
 @st.cache_data(ttl=3600)
 def load_piezometric_data(file_path=None):
-    """Load piezometric analysis results from Excel"""
-    
     potential_paths = [
         file_path,
         "data/Groundwater_Trend_Analysis_Complete.xlsx",
@@ -672,8 +554,6 @@ def load_piezometric_data(file_path=None):
 
 @st.cache_data(ttl=3600)
 def load_well_history_data(file_path=None):
-    """Load well historical data from niveles_estaticos_pozos_historico.xlsx"""
-    
     potential_paths = [
         file_path,
         "data/niveles_estaticos_pozos_historico.xlsx",
@@ -686,10 +566,8 @@ def load_well_history_data(file_path=None):
             try:
                 df = pd.read_excel(path)
                 
-                # Parse date column (American format mm-dd-yyyy)
                 df['Date'] = pd.to_datetime(df['Fecha_US'], format='%m-%d-%Y', errors='coerce')
                 
-                # Rename columns for easier access
                 df = df.rename(columns={
                     'CODIGO ESTACION': 'Station_Code',
                     'NOMBRE ESTACION': 'Station_Name',
@@ -701,7 +579,6 @@ def load_well_history_data(file_path=None):
                     'COMUNA': 'Comuna'
                 })
                 
-                # Ensure Station_Code is string
                 df['Station_Code'] = df['Station_Code'].astype(str)
                 
                 return {
@@ -716,8 +593,6 @@ def load_well_history_data(file_path=None):
 
 @st.cache_data(ttl=3600)
 def load_dga_water_rights(file_path=None):
-    """Load DGA water rights from FINAL_VALIDOS_En_Chile_ultimo.xlsx"""
-    
     potential_paths = [
         file_path,
         "data/FINAL_VALIDOS_En_Chile_ultimo.xlsx",
@@ -730,7 +605,6 @@ def load_dga_water_rights(file_path=None):
             try:
                 df = pd.read_excel(path)
                 
-                # Rename columns for easier access
                 df = df.rename(columns={
                     'Código de Expediente': 'Expediente_Code',
                     'lat_wgs84_final': 'Latitude',
@@ -741,7 +615,6 @@ def load_dga_water_rights(file_path=None):
                     'Comuna': 'Comuna'
                 })
                 
-                # Filter out invalid coordinates
                 df = df.dropna(subset=['Latitude', 'Longitude'])
                 df = df[(df['Latitude'] >= -56) & (df['Latitude'] <= -17)]
                 df = df[(df['Longitude'] >= -76) & (df['Longitude'] <= -66)]
@@ -758,8 +631,6 @@ def load_dga_water_rights(file_path=None):
 
 @st.cache_data(ttl=3600)
 def load_census_points(year):
-    """Load Census well points (2017 or 2024)"""
-    
     if year == 2017:
         filename = "Censo_2017_pozos_5_meters.xlsx"
     else:
@@ -776,13 +647,11 @@ def load_census_points(year):
             try:
                 df = pd.read_excel(path)
                 
-                # Rename columns for consistency
                 df = df.rename(columns={
                     'Long_WGS84': 'Longitude',
                     'Lat_WGS84': 'Latitude'
                 })
                 
-                # Filter out invalid coordinates
                 df = df.dropna(subset=['Latitude', 'Longitude'])
                 df = df[(df['Latitude'] >= -56) & (df['Latitude'] <= -17)]
                 df = df[(df['Longitude'] >= -76) & (df['Longitude'] <= -66)]
@@ -799,8 +668,6 @@ def load_census_points(year):
 
 @st.cache_data(ttl=3600)
 def load_census_data(file_path=None):
-    """Load census comparison data from Excel"""
-    
     potential_paths = [
         file_path,
         "data/Comparacion_Censo2017_vs_Censo2024.xlsx",
@@ -827,8 +694,6 @@ def load_census_data(file_path=None):
 
 
 def generate_demo_data():
-    """Generate demonstration data if files not available"""
-    
     np.random.seed(42)
     n_wells = 474
     
@@ -893,19 +758,13 @@ def generate_demo_data():
         'demo': True
     }
 
-# ============================================================
-# VISUALIZATION FUNCTIONS
-# ============================================================
-
 def create_well_map(df_wells, selected_wells=None, color_by='Linear_Slope_m_yr',
                     show_dga_stations=False, dga_stations_data=None,
                     show_water_rights=False, water_rights_data=None,
                     show_census_2017=False, census_2017_data=None,
                     show_census_2024=False, census_2024_data=None,
                     lang='es'):
-    """Create interactive Folium map with wells and additional layers"""
     
-    # Center on Chile
     center_lat = df_wells['Latitude'].mean() if len(df_wells) > 0 else -33.45
     center_lon = df_wells['Longitude'].mean() if len(df_wells) > 0 else -70.65
     
@@ -915,21 +774,18 @@ def create_well_map(df_wells, selected_wells=None, color_by='Linear_Slope_m_yr',
         tiles='cartodbpositron'
     )
     
-    # Layer names based on language
     wells_layer_name = '📍 Pozos Piezométricos' if lang == 'es' else '📍 Piezometric Wells'
     dga_layer_name = '🔵 Estaciones DGA' if lang == 'es' else '🔵 DGA Stations'
     rights_layer_name = '💧 Derechos de Agua' if lang == 'es' else '💧 Water Rights'
     census17_layer_name = '🏠 Censo 2017' if lang == 'es' else '🏠 Census 2017'
     census24_layer_name = '🏘️ Censo 2024' if lang == 'es' else '🏘️ Census 2024'
     
-    # Create feature groups for layer control
     wells_layer = folium.FeatureGroup(name=wells_layer_name, show=True)
     dga_stations_layer = folium.FeatureGroup(name=dga_layer_name, show=True)
     water_rights_layer = folium.FeatureGroup(name=rights_layer_name, show=False)
     census_2017_layer = folium.FeatureGroup(name=census17_layer_name, show=False)
     census_2024_layer = folium.FeatureGroup(name=census24_layer_name, show=False)
     
-    # Color scale based on trend for wells
     def get_color(value, min_val, max_val):
         if pd.isna(value):
             return 'gray'
@@ -958,7 +814,6 @@ def create_well_map(df_wells, selected_wells=None, color_by='Linear_Slope_m_yr',
                     radius = 6
                     fill_opacity = 0.7
                 
-                # Popup content based on language
                 shac_label = "SHAC" if lang == 'es' else "SHAC"
                 region_label = "Región" if lang == 'es' else "Region"
                 records_label = "Registros" if lang == 'es' else "Records"
@@ -990,7 +845,6 @@ def create_well_map(df_wells, selected_wells=None, color_by='Linear_Slope_m_yr',
                     weight=1
                 ).add_to(marker_cluster)
     
-    # Add DGA Monitoring Stations layer
     if show_dga_stations and dga_stations_data is not None and dga_stations_data.get('loaded'):
         df_stations = dga_stations_data['data']
         unique_stations = df_stations.drop_duplicates(subset=['Station_Code'])[['Station_Code', 'Station_Name', 'Latitude', 'Longitude', 'Altitude', 'Region', 'Comuna']].copy()
@@ -1029,7 +883,6 @@ def create_well_map(df_wells, selected_wells=None, color_by='Linear_Slope_m_yr',
                     weight=2
                 ).add_to(station_cluster)
     
-    # Add DGA Water Rights layer
     if show_water_rights and water_rights_data is not None and water_rights_data.get('loaded'):
         df_rights = water_rights_data['data']
         
@@ -1073,7 +926,6 @@ def create_well_map(df_wells, selected_wells=None, color_by='Linear_Slope_m_yr',
                     weight=1
                 ).add_to(rights_cluster)
     
-    # Add Census 2017 layer
     if show_census_2017 and census_2017_data is not None and census_2017_data.get('loaded'):
         df_census = census_2017_data['data']
         
@@ -1099,7 +951,6 @@ def create_well_map(df_wells, selected_wells=None, color_by='Linear_Slope_m_yr',
                     weight=1
                 ).add_to(census17_cluster)
     
-    # Add Census 2024 layer
     if show_census_2024 and census_2024_data is not None and census_2024_data.get('loaded'):
         df_census = census_2024_data['data']
         
@@ -1125,17 +976,14 @@ def create_well_map(df_wells, selected_wells=None, color_by='Linear_Slope_m_yr',
                     weight=1
                 ).add_to(census24_cluster)
     
-    # Add all layers to map
     wells_layer.add_to(m)
     dga_stations_layer.add_to(m)
     water_rights_layer.add_to(m)
     census_2017_layer.add_to(m)
     census_2024_layer.add_to(m)
     
-    # Add layer control
     folium.LayerControl(collapsed=False).add_to(m)
     
-    # Legend labels based on language
     legend_title = "Leyenda de Capas" if lang == 'es' else "Layer Legend"
     high_decline = "Alto Descenso" if lang == 'es' else "High Decline"
     moderate = "Moderado" if lang == 'es' else "Moderate"
@@ -1172,8 +1020,6 @@ def create_well_map(df_wells, selected_wells=None, color_by='Linear_Slope_m_yr',
 
 
 def create_well_time_series_with_regression(df_well_data, well_id, well_name, lang='es'):
-    """Create time series plot for a selected well with linear regression"""
-    
     df_well = df_well_data[df_well_data['Station_Code'] == well_id].copy()
     df_well = df_well.dropna(subset=['Date', 'Water_Level'])
     df_well = df_well.sort_values('Date')
@@ -1194,7 +1040,6 @@ def create_well_time_series_with_regression(df_well_data, well_id, well_name, la
     
     fig = make_subplots(rows=1, cols=1)
     
-    # Labels based on language
     obs_label = "Observaciones" if lang == 'es' else "Observations"
     trend_label = "Tendencia Lineal" if lang == 'es' else "Linear Trend"
     date_label = "Fecha" if lang == 'es' else "Date"
@@ -1221,7 +1066,6 @@ def create_well_time_series_with_regression(df_well_data, well_id, well_name, la
         hovertemplate=f'<b>{trend_label}:</b> %{{y:.2f}} m<extra></extra>'
     ))
     
-    # Determine trend status
     if slope_per_year > 0.05:
         if lang == 'es':
             trend_status = "📈 En declive (nivel bajando)"
@@ -1282,8 +1126,6 @@ def create_well_time_series_with_regression(df_well_data, well_id, well_name, la
 
 
 def create_regional_comparison_plot(df_regions, lang='es'):
-    """Create bar chart comparing regions"""
-    
     df_sorted = df_regions.sort_values('Avg_Linear_Slope_m_yr', ascending=True)
     
     colors = ['#d62728' if x > 0.3 else '#ff7f0e' if x > 0.1 else '#2ca02c' 
@@ -1317,8 +1159,6 @@ def create_regional_comparison_plot(df_regions, lang='es'):
 
 
 def create_shac_heatmap(df_shacs, lang='es'):
-    """Create heatmap of SHAC metrics"""
-    
     df_top = df_shacs.nlargest(20, 'Avg_Linear_Slope_m_yr')
     
     fig = go.Figure()
@@ -1351,20 +1191,10 @@ def create_shac_heatmap(df_shacs, lang='es'):
     
     return fig
 
-# ============================================================
-# MAIN APPLICATION
-# ============================================================
-
 def main():
-    """Main Streamlit application"""
-    
-    # ============================================================
-    # SIDEBAR - LANGUAGE SELECTOR AT TOP
-    # ============================================================
     with st.sidebar:
         st.image("https://upload.wikimedia.org/wikipedia/commons/7/78/Flag_of_Chile.svg", width=100)
         
-        # Language selector
         st.markdown("---")
         st.subheader(t('language'))
         
@@ -1386,7 +1216,6 @@ def main():
         
         st.markdown("---")
         
-        # File upload option
         st.subheader(t('data_source'))
         
         data_source = st.radio(
@@ -1412,7 +1241,6 @@ def main():
         
         st.markdown("---")
         
-        # Load data
         with st.spinner("Loading data..." if st.session_state.language == 'en' else "Cargando datos..."):
             piezo_data = load_piezometric_data(piezo_file)
             census_data = load_census_data(census_file)
@@ -1426,7 +1254,6 @@ def main():
         elif piezo_data.get('loaded'):
             st.success(t('data_loaded'))
         
-        # Show data loading status
         st.markdown(t('data_status'))
         st.write(f"- {t('well_history')}: {'✅' if well_history_data.get('loaded') else '❌'}")
         st.write(f"- {t('water_rights')}: {'✅' if dga_water_rights.get('loaded') else '❌'}")
@@ -1435,17 +1262,14 @@ def main():
         
         st.markdown("---")
         
-        # Filters
         st.subheader(t('filters'))
         
         if piezo_data.get('loaded'):
             df_wells = piezo_data['wells']
             
-            # Region filter
             regions = [t('all')] + sorted(df_wells['Region'].dropna().unique().tolist())
             selected_region = st.selectbox(t('select_region'), regions)
             
-            # SHAC filter
             if selected_region != t('all'):
                 available_shacs = df_wells[df_wells['Region'] == selected_region]['SHAC'].dropna().unique()
             else:
@@ -1454,7 +1278,6 @@ def main():
             shacs = [t('all')] + sorted(available_shacs.tolist())
             selected_shac = st.selectbox(t('select_shac'), shacs)
             
-            # Trend filter
             trend_options = [t('decreasing'), t('increasing'), t('stable')]
             trend_filter = st.multiselect(
                 t('trend_status'),
@@ -1462,7 +1285,6 @@ def main():
                 default=trend_options
             )
             
-            # Map trend filter back to English for data filtering
             trend_map = {
                 t('decreasing'): 'Decreasing',
                 t('increasing'): 'Increasing',
@@ -1470,7 +1292,6 @@ def main():
             }
             trend_filter_en = [trend_map.get(tf, tf) for tf in trend_filter]
             
-            # Apply filters
             df_filtered = df_wells.copy()
             if selected_region != t('all'):
                 df_filtered = df_filtered[df_filtered['Region'] == selected_region]
@@ -1486,17 +1307,10 @@ def main():
         st.markdown("---")
         st.markdown(t('last_updated') + " " + datetime.now().strftime("%Y-%m-%d"))
     
-    # ============================================================
-    # HEADER
-    # ============================================================
     st.markdown(f'<div class="main-header">{t("main_header")}</div>', 
                 unsafe_allow_html=True)
     st.markdown(f'<div class="sub-header">{t("sub_header")}</div>', 
                 unsafe_allow_html=True)
-    
-    # ============================================================
-    # MAIN CONTENT - TABS
-    # ============================================================
     
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         t('tab_overview'), 
@@ -1506,9 +1320,6 @@ def main():
         t('tab_data')
     ])
     
-    # ============================================================
-    # TAB 1: OVERVIEW / DASHBOARD
-    # ============================================================
     with tab1:
         st.header(t('national_summary'))
         
@@ -1687,13 +1498,9 @@ def main():
             </div>
             """, unsafe_allow_html=True)
     
-    # ============================================================
-    # TAB 2: INTERACTIVE MAP
-    # ============================================================
     with tab2:
         st.header(t('interactive_map'))
         
-        # Disclaimers
         st.markdown(f"""
         <div class="disclaimer-box">
             <h4>{t('disclaimers_title')}</h4>
@@ -1778,9 +1585,6 @@ def main():
         else:
             st.warning(t('no_data_available'))
     
-    # ============================================================
-    # TAB 3: WELL ANALYSIS
-    # ============================================================
     with tab3:
         st.header(t('individual_well_analysis'))
         
@@ -1928,9 +1732,6 @@ def main():
         else:
             st.warning(t('well_history_not_available'))
     
-    # ============================================================
-    # TAB 4: SPATIAL AGGREGATION
-    # ============================================================
     with tab4:
         st.header(t('spatial_aggregation'))
         
@@ -2006,9 +1807,6 @@ def main():
         else:
             st.warning(t('no_data_available'))
     
-    # ============================================================
-    # TAB 5: DATA TABLES
-    # ============================================================
     with tab5:
         st.header(t('data_tables_export'))
         
@@ -2043,7 +1841,6 @@ def main():
                     df_display = pd.DataFrame()
                     st.warning(t('well_history_not_loaded'))
             
-            # Search filter
             search_term = st.text_input(t('search'), "")
             if search_term and len(df_display) > 0:
                 mask = df_display.astype(str).apply(
@@ -2053,7 +1850,6 @@ def main():
             
             st.dataframe(df_display, use_container_width=True, height=500)
             
-            # Export button
             if len(df_display) > 0:
                 csv = df_display.to_csv(index=False)
                 st.download_button(
@@ -2065,9 +1861,6 @@ def main():
         else:
             st.warning(t('no_data_available'))
     
-    # ============================================================
-    # FOOTER WITH DISCLAIMERS
-    # ============================================================
     st.markdown("---")
     
     st.markdown(f"""
@@ -2092,8 +1885,5 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
-# ============================================================
-# RUN APPLICATION
-# ============================================================
 if __name__ == "__main__":
     main()
