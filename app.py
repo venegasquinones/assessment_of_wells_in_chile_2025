@@ -902,53 +902,78 @@ def main():
                     well_info = None
                 else:
                     well_info = well_matches.iloc[0]
-                
-                if len(well_matches) == 0:
-                    st.error("Selected well not found in filtered data. Please adjust filters.")
-                    well_info = None
-                else:
-                    well_info = well_matches.iloc[0]
-                
-                st.markdown("### Well Information")
-                st.markdown(f"""
-                | Property | Value |
-                |----------|-------|
-                | **Station Code** | {well_info['Station_Code']} |
-                | **SHAC** | {well_info.get('SHAC', 'N/A')} |
-                | **Region** | {well_info.get('Region', 'N/A')} |
-                | **Comuna** | {well_info.get('Comuna', 'N/A')} |
-                | **Records** | {well_info.get('N_Records', 'N/A')} |
-                | **Period** | {well_info.get('Year_Start', 'N/A')} - {well_info.get('Year_End', 'N/A')} |
-                | **Current Level** | {well_info.get('WL_Current', 'N/A'):.1f} m |
-                | **Trend** | {well_info.get('Linear_Slope_m_yr', 'N/A'):.4f} m/yr |
-                | **R²** | {well_info.get('Linear_R2', 'N/A'):.3f} |
-                | **Status** | {well_info.get('Consensus_Trend', 'N/A')} |
-                """)
-                
-                # 2030 Projections
-                st.markdown("### 2030 Projections")
-                
-                arima = well_info.get('ARIMA_Pred_2030')
-                prophet = well_info.get('Prophet_Pred_2030')
-                lstm = well_info.get('LSTM_Pred_2030')
-                
-                if pd.notna(arima):
-                    change = arima - well_info.get('WL_Current', 0)
-                    st.metric("ARIMA", f"{arima:.1f} m", f"{change:+.1f} m")
-                
-                if pd.notna(prophet):
-                    change = prophet - well_info.get('WL_Current', 0)
-                    st.metric("Prophet", f"{prophet:.1f} m", f"{change:+.1f} m")
-                
-                if pd.notna(lstm):
-                    change = lstm - well_info.get('WL_Current', 0)
-                    st.metric("LSTM", f"{lstm:.1f} m", f"{change:+.1f} m")
+                    
+                    st.markdown("### Well Information")
+                    
+                    # Safely extract values with proper defaults
+                    try:
+                        station_code = str(well_info.get('Station_Code', 'N/A'))
+                        shac = str(well_info.get('SHAC', 'N/A'))
+                        region = str(well_info.get('Region', 'N/A'))
+                        comuna = str(well_info.get('Comuna', 'N/A'))
+                        n_records = well_info.get('N_Records', 'N/A')
+                        year_start = well_info.get('Year_Start', 'N/A')
+                        year_end = well_info.get('Year_End', 'N/A')
+                        wl_current = well_info.get('WL_Current', None)
+                        slope = well_info.get('Linear_Slope_m_yr', None)
+                        r2 = well_info.get('Linear_R2', None)
+                        trend = str(well_info.get('Consensus_Trend', 'N/A'))
+                        
+                        # Format numeric values
+                        wl_str = f"{float(wl_current):.1f}" if pd.notna(wl_current) else "N/A"
+                        slope_str = f"{float(slope):.4f}" if pd.notna(slope) else "N/A"
+                        r2_str = f"{float(r2):.3f}" if pd.notna(r2) else "N/A"
+                        
+                        st.markdown(f"""
+                        | Property | Value |
+                        |----------|-------|
+                        | **Station Code** | {station_code} |
+                        | **SHAC** | {shac} |
+                        | **Region** | {region} |
+                        | **Comuna** | {comuna} |
+                        | **Records** | {n_records} |
+                        | **Period** | {year_start} - {year_end} |
+                        | **Current Level** | {wl_str} m |
+                        | **Trend** | {slope_str} m/yr |
+                        | **R²** | {r2_str} |
+                        | **Status** | {trend} |
+                        """)
+                    except Exception as e:
+                        st.error(f"Error displaying well information. Please try another well.")
+                        well_info = None
+                    
+                    # 2030 Projections
+                    if well_info is not None:
+                        st.markdown("### 2030 Projections")
+                        
+                        try:
+                            arima = well_info.get('ARIMA_Pred_2030')
+                            prophet = well_info.get('Prophet_Pred_2030')
+                            lstm = well_info.get('LSTM_Pred_2030')
+                            current_level = well_info.get('WL_Current')
+                            
+                            if pd.notna(arima) and pd.notna(current_level):
+                                change = float(arima) - float(current_level)
+                                st.metric("ARIMA", f"{float(arima):.1f} m", f"{change:+.1f} m")
+                            
+                            if pd.notna(prophet) and pd.notna(current_level):
+                                change = float(prophet) - float(current_level)
+                                st.metric("Prophet", f"{float(prophet):.1f} m", f"{change:+.1f} m")
+                            
+                            if pd.notna(lstm) and pd.notna(current_level):
+                                change = float(lstm) - float(current_level)
+                                st.metric("LSTM", f"{float(lstm):.1f} m", f"{change:+.1f} m")
+                        except Exception as e:
+                            st.info("Projection data not available for this well.")
             
             with col2:
-                # Time series plot
-                st.markdown("### Time Series & Projections")
-                fig_ts = create_time_series_plot(df_filtered, selected_well_id)
-                st.plotly_chart(fig_ts, use_container_width=True)
+                # Time series plot - only show if well_info exists
+                if well_info is not None:
+                    st.markdown("### Time Series & Projections")
+                    fig_ts = create_time_series_plot(df_filtered, selected_well_id)
+                    st.plotly_chart(fig_ts, use_container_width=True)
+                else:
+                    st.info("Select a well from the list to view time series analysis.")
         else:
             st.warning("No data available. Please load data or adjust filters.")
     
