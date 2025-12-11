@@ -1821,34 +1821,47 @@ def main():
                         help=t('select_well_help')
                     )
                 
+                # Robust extraction of well code and information
                 if selected_well_display:
-                    selected_well_code = selected_well_display.split('(')[-1].replace(')', '').strip()
-                    selected_well_name = selected_well_display.split('(')[0].strip()
-                    
-                    well_info = unique_wells[unique_wells['Station_Code'] == selected_well_code].iloc[0]
-                    
-                    st.markdown(f"### {t('well_information')}")
-                    
-                    st.markdown(f"""
-                    | {t('property')} | {t('value')} |
-                    |----------|-------|
-                    | **{t('station_code')}** | {well_info['Station_Code']} |
-                    | **{t('station_name')}** | {well_info['Station_Name']} |
-                    | **{t('region')}** | {well_info.get('Region', 'N/A')} |
-                    | **{t('comuna')}** | {well_info.get('Comuna', 'N/A')} |
-                    | **{t('altitude')}** | {well_info.get('Altitude', 'N/A')} m |
-                    | **{t('latitude')}** | {well_info.get('Latitude', 'N/A'):.6f} |
-                    | **{t('longitude')}** | {well_info.get('Longitude', 'N/A'):.6f} |
-                    """)
-                    
-                    well_records = df_history[df_history['Station_Code'] == selected_well_code]
-                    st.markdown(f"{t('total_records')} {len(well_records)}")
-                    
-                    if len(well_records) > 0:
-                        min_date = well_records['Date'].min()
-                        max_date = well_records['Date'].max()
-                        if pd.notna(min_date) and pd.notna(max_date):
-                            st.markdown(f"{t('period')} {min_date.strftime('%Y-%m-%d')} - {max_date.strftime('%Y-%m-%d')}")
+                    try:
+                        # Extract code robustly: "Name (Code)"
+                        parts = selected_well_display.rpartition('(')
+                        selected_well_name = parts[0].strip()
+                        selected_well_code = parts[2].replace(')', '').strip()
+                        
+                        well_subset = unique_wells[unique_wells['Station_Code'] == selected_well_code]
+                        
+                        if not well_subset.empty:
+                            well_info = well_subset.iloc[0]
+                            
+                            st.markdown(f"### {t('well_information')}")
+                            
+                            st.markdown(f"""
+                            | {t('property')} | {t('value')} |
+                            |----------|-------|
+                            | **{t('station_code')}** | {well_info['Station_Code']} |
+                            | **{t('station_name')}** | {well_info['Station_Name']} |
+                            | **{t('region')}** | {well_info.get('Region', 'N/A')} |
+                            | **{t('comuna')}** | {well_info.get('Comuna', 'N/A')} |
+                            | **{t('altitude')}** | {well_info.get('Altitude', 'N/A')} m |
+                            | **{t('latitude')}** | {well_info.get('Latitude', 'N/A'):.6f} |
+                            | **{t('longitude')}** | {well_info.get('Longitude', 'N/A'):.6f} |
+                            """)
+                            
+                            well_records = df_history[df_history['Station_Code'] == selected_well_code]
+                            st.markdown(f"{t('total_records')} {len(well_records)}")
+                            
+                            if len(well_records) > 0:
+                                min_date = well_records['Date'].min()
+                                max_date = well_records['Date'].max()
+                                if pd.notna(min_date) and pd.notna(max_date):
+                                    st.markdown(f"{t('period')} {min_date.strftime('%Y-%m-%d')} - {max_date.strftime('%Y-%m-%d')}")
+                        else:
+                            st.warning(f"Well information not found for code: {selected_well_code}")
+                            selected_well_display = None # Prevents graph rendering
+                    except Exception as e:
+                        st.error(f"Error processing well selection: {str(e)}")
+                        selected_well_display = None
             
             with col2:
                 if selected_well_display:
