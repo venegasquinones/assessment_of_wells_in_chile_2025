@@ -28,7 +28,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import folium
-from streamlit_folium import st_folium, folium_static
+from streamlit_folium import st_folium
 from folium.plugins import MarkerCluster, HeatMap
 import json
 import os
@@ -1233,7 +1233,7 @@ def main():
                 showlegend=False,
                 annotations=[dict(text='217K<br>Total', x=0.5, y=0.5, font_size=16, showarrow=False)]
             )
-            st.plotly_chart(fig_pie, use_container_width=True)
+            st.plotly_chart(fig_pie, width="stretch")
         
         with col_right:
             st.subheader("Piezometric Trends")
@@ -1251,7 +1251,7 @@ def main():
                 showlegend=False,
                 annotations=[dict(text='474<br>Wells', x=0.5, y=0.5, font_size=16, showarrow=False)]
             )
-            st.plotly_chart(fig_pie2, use_container_width=True)
+            st.plotly_chart(fig_pie2, width="stretch")
         
         st.markdown("---")
         
@@ -1403,7 +1403,7 @@ def main():
                 
                 # Triple comparison chart
                 fig_triple = create_triple_comparison_chart(df_region)
-                st.plotly_chart(fig_triple, use_container_width=True)
+                st.plotly_chart(fig_triple, width="stretch")
                 
                 st.markdown("---")
                 
@@ -1415,7 +1415,7 @@ def main():
                 """)
                 
                 fig_gap = create_gap_analysis_chart(df_region)
-                st.plotly_chart(fig_gap, use_container_width=True)
+                st.plotly_chart(fig_gap, width="stretch")
                 
                 # Summary statistics
                 st.markdown("---")
@@ -1434,7 +1434,7 @@ def main():
                     'Cambio_Censo_Pct': 'Change %'
                 })
                 
-                st.dataframe(df_display, use_container_width=True, height=400)
+                st.dataframe(df_display, width="stretch", height=400)
             
             # ============================================================
             # SUBTAB 2: COMUNA ANALYSIS
@@ -1516,7 +1516,7 @@ def main():
                         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
                     )
                     
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width="stretch")
                 
                 # Table
                 st.markdown("---")
@@ -1533,7 +1533,7 @@ def main():
                     'Cambio_Censo_2017_2024': 'Change 2017→2024'
                 })
                 
-                st.dataframe(df_display_comuna, use_container_width=True, height=400)
+                st.dataframe(df_display_comuna, width="stretch", height=400)
             
             # ============================================================
             # SUBTAB 3: CENSUS CHANGE ANALYSIS
@@ -1578,14 +1578,14 @@ def main():
                 # Change percentage chart
                 st.subheader(f"Well Count Change by {level_col} (%)")
                 fig_change = create_census_change_chart(df_cambio, level_col)
-                st.plotly_chart(fig_change, use_container_width=True)
+                st.plotly_chart(fig_change, width="stretch")
                 
                 st.markdown("---")
                 
                 # Groundwater dependence chart
                 st.subheader(f"Groundwater Dependence: % of Homes with Wells")
                 fig_gw = create_wells_per_housing_chart(df_cambio, level_col)
-                st.plotly_chart(fig_gw, use_container_width=True)
+                st.plotly_chart(fig_gw, width="stretch")
                 
                 st.markdown("---")
                 
@@ -1618,7 +1618,7 @@ def main():
                 
                 df_display_cambio = df_display_cambio[[c for c in display_cols if c in df_display_cambio.columns]]
                 
-                st.dataframe(df_display_cambio, use_container_width=True, height=400)
+                st.dataframe(df_display_cambio, width="stretch", height=400)
             
             # ============================================================
             # SUBTAB 4: DETAILED TABLES
@@ -1648,7 +1648,7 @@ def main():
                     ).any(axis=1)
                     df_export = df_export[mask]
                 
-                st.dataframe(df_export, use_container_width=True, height=500)
+                st.dataframe(df_export, width="stretch", height=500)
                 
                 # Export button
                 csv = df_export.to_csv(index=False)
@@ -1760,7 +1760,7 @@ def main():
                     )
                     
                     if fig_ts is not None:
-                        st.plotly_chart(fig_ts, use_container_width=True)
+                        st.plotly_chart(fig_ts, width="stretch")
                         
                         # Summary statistics
                         col_a, col_b, col_c = st.columns(3)
@@ -1815,7 +1815,7 @@ def main():
                     'Altitude': 'Altitude (m)'
                 })
                 
-                st.dataframe(well_data_display, use_container_width=True, height=300)
+                st.dataframe(well_data_display, width="stretch", height=300)
                 
                 # Download button
                 csv = well_data_display.to_csv(index=False)
@@ -1849,10 +1849,10 @@ def main():
                 
                 if agg_level == 'Region' and 'regions' in piezo_data:
                     fig_bar = create_regional_comparison_plot(piezo_data['regions'])
-                    st.plotly_chart(fig_bar, use_container_width=True)
+                    st.plotly_chart(fig_bar, width="stretch")
                 elif agg_level == 'SHAC' and 'shacs' in piezo_data:
                     fig_bar = create_shac_heatmap(piezo_data['shacs'])
-                    st.plotly_chart(fig_bar, use_container_width=True)
+                    st.plotly_chart(fig_bar, width="stretch")
                 elif agg_level == 'Comuna' and 'comunas' in piezo_data:
                     df_comunas = piezo_data['comunas'].nlargest(15, 'Avg_Linear_Slope_m_yr')
                     
@@ -1868,7 +1868,7 @@ def main():
                         xaxis_title="Mean Decline Rate (m/year)",
                         height=500
                     )
-                    st.plotly_chart(fig, use_container_width=True)
+                    st.plotly_chart(fig, width="stretch")
             
             with col2:
                 st.subheader(f"{agg_level} Summary Statistics")
@@ -1879,7 +1879,7 @@ def main():
                                                          'Pct_Decreasing_Consensus']].copy()
                     df_display.columns = ['Region', 'Wells', 'Decline (m/yr)', '% Declining']
                     df_display = df_display.sort_values('Decline (m/yr)', ascending=False)
-                    st.dataframe(df_display, use_container_width=True, height=500)
+                    st.dataframe(df_display, width="stretch", height=500)
                     
                 elif agg_level == 'SHAC' and 'shacs' in piezo_data:
                     df_display = piezo_data['shacs'][['SHAC', 'Total_Wells', 
@@ -1887,7 +1887,7 @@ def main():
                                                        'Pct_Decreasing_Consensus']].copy()
                     df_display.columns = ['SHAC', 'Wells', 'Decline (m/yr)', '% Declining']
                     df_display = df_display.sort_values('Decline (m/yr)', ascending=False).head(30)
-                    st.dataframe(df_display, use_container_width=True, height=500)
+                    st.dataframe(df_display, width="stretch", height=500)
                     
                 elif agg_level == 'Comuna' and 'comunas' in piezo_data:
                     df_display = piezo_data['comunas'][['Comuna', 'Total_Wells', 
@@ -1895,7 +1895,7 @@ def main():
                                                          'Pct_Decreasing_Consensus']].copy()
                     df_display.columns = ['Comuna', 'Wells', 'Decline (m/yr)', '% Declining']
                     df_display = df_display.sort_values('Decline (m/yr)', ascending=False).head(30)
-                    st.dataframe(df_display, use_container_width=True, height=500)
+                    st.dataframe(df_display, width="stretch", height=500)
         else:
             st.warning("No data available.")
     
@@ -1935,7 +1935,7 @@ def main():
                 ).any(axis=1)
                 df_display = df_display[mask]
             
-            st.dataframe(df_display, use_container_width=True, height=500)
+            st.dataframe(df_display, width="stretch", height=500)
             
             # Export button
             if len(df_display) > 0:
@@ -2055,7 +2055,7 @@ def main():
                     )
                 
                 # Display map
-                folium_static(m, width=900, height=600)
+                st_folium(m, width=900, height=600, returned_objects=[])
             
             # Map legend and explanation
             st.markdown("---")
@@ -2121,7 +2121,7 @@ def main():
                 tiles='cartodbpositron'
             )
             
-            folium_static(m, width=800, height=500)
+            st_folium(m, width=800, height=500, returned_objects=[])
     
     # ============================================================
     # FOOTER
