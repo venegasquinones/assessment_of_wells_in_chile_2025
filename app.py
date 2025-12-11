@@ -105,14 +105,30 @@ TRANS = {
     'critical_comunas': {'es': 'Comunas Críticas', 'en': 'Critical Comunas'},
     'critical_shacs': {'es': 'SHACs Críticos', 'en': 'Critical SHACs'},
     
-    # Findings
+    # Findings Headers
     'key_findings': {'es': 'Hallazgos Clave', 'en': 'Key Findings'},
     'data_quality': {'es': '⚠️ Crisis de Calidad de Datos', 'en': '⚠️ Data Quality Crisis'},
-    'data_quality_text': {'es': '10.4% de registros DGA con errores de geolocalización', 'en': '10.4% of DGA records contain geolocation errors'},
     'extraction_gap': {'es': '⚠️ Brecha Masiva de Extracción', 'en': '⚠️ Massive Extraction Gap'},
     'depletion': {'es': '⚠️ Agotamiento Generalizado', 'en': '⚠️ Widespread Aquifer Depletion'},
     'trajectory': {'es': '⚠️ Trayectoria Empeorando', 'en': '⚠️ Worsening Trajectory'},
     
+    # Findings Bullets (Specific Translations)
+    'dq_b1': {'es': '10.4% de registros DGA con errores de geolocalización', 'en': '10.4% of DGA records contain geolocation errors'},
+    'dq_b2': {'es': '7,233 pozos ubicados fuera del territorio chileno', 'en': '7,233 wells plotted outside Chilean territory'},
+    'dq_b3': {'es': 'Base de información fundamentalmente comprometida', 'en': 'Information base is fundamentally compromised'},
+    
+    'gap_b1': {'es': '~154,000 puntos de extracción no registrados a nivel nacional', 'en': '~154,000 unregistered extraction points nationally'},
+    'gap_b2': {'es': '70.7% de pozos reportados en censo no están en registro DGA', 'en': '70.7% of census-reported wells not in DGA registry'},
+    'gap_b3': {'es': 'Concentrado en el sur húmedo y zonas periurbanas', 'en': 'Concentrated in humid south and peri-urban zones'},
+    
+    'dep_b1': {'es': '87.1% de pozos monitoreados muestran tendencias decrecientes', 'en': '87.1% of monitored wells show declining trends'},
+    'dep_b2': {'es': 'Tasa media de disminución: 0.24 m/año', 'en': 'Mean decline rate: 0.24 m/year'},
+    'dep_b3': {'es': 'Disminución máxima: 4.24 m/año (insostenible)', 'en': 'Maximum decline: 4.24 m/year (unsustainable)'},
+    
+    'traj_b1': {'es': 'Dependencia de aguas subterráneas aumentó 3.6% (2017-2024)', 'en': 'Groundwater dependence increased 3.6% (2017-2024)'},
+    'traj_b2': {'es': 'Durante megasequía cuando se esperaba conservación', 'en': 'During Chile\'s megadrought when conservation expected'},
+    'traj_b3': {'es': 'Zonas periurbanas muestran aumentos >80%', 'en': 'Peri-urban zones show >80% increases'},
+
     # Census
     'census_header': {'es': 'Comparación: DGA vs Censo 2017 vs Censo 2024', 'en': 'Comparison: DGA vs Census 2017 vs Census 2024'},
     'regional_overview': {'es': 'Panorama Regional', 'en': 'Regional Overview'},
@@ -125,7 +141,37 @@ TRANS = {
     'color_by': {'es': 'Colorear pozos por:', 'en': 'Color wells by:'},
     'toggle_layers': {'es': 'Capas', 'en': 'Toggle Layers'},
     'export_coords': {'es': '📥 Exportar Coordenadas Visibles', 'en': '📥 Export Visible Well Coordinates'},
-    'disclaimer': {'es': '⚠️ Aviso Importante', 'en': '⚠️ Important Disclaimers'}
+    'disclaimer': {'es': '⚠️ Aviso Importante', 'en': '⚠️ Important Disclaimers'},
+    'map_disclaimer_text_1': {
+        'es': '<b>Derechos DGA:</b> La geolocalización puede tener errores.',
+        'en': '<b>DGA Water Rights:</b> Geolocation may contain errors.'
+    },
+    'map_disclaimer_text_2': {
+        'es': '<b>Censo:</b> Puntos aleatorios dentro de la unidad censal (radio 5m).',
+        'en': '<b>Census:</b> Randomized points within census unit (5m radius).'
+    },
+
+    # Footer
+    'footer_sources': {'es': '### 📚 Fuentes de Datos', 'en': '### 📚 Data Sources'},
+    'footer_method': {'es': '### 🔬 Metodología', 'en': '### 🔬 Methodology'},
+    'footer_limit': {'es': '### ⚠️ Limitaciones', 'en': '### ⚠️ Limitations'},
+    
+    'src_dga': {'es': '- **DGA**: Dirección General de Aguas', 'en': '- **DGA**: Dirección General de Aguas'},
+    'src_ine17': {'es': '- **Censo INE 2017**: Instituto Nacional de Estadísticas', 'en': '- **INE Census 2017**: Instituto Nacional de Estadísticas'},
+    'src_ine24': {'es': '- **Censo INE 2024**: Instituto Nacional de Estadísticas', 'en': '- **INE Census 2024**: Instituto Nacional de Estadísticas'},
+    
+    'met_1': {'es': '- Regresión lineal para análisis de tendencias', 'en': '- Linear regression for trend analysis'},
+    'met_2': {'es': '- Clasificación basada en consenso', 'en': '- Consensus-based classification'},
+    'met_3': {'es': '- Agregación espacial por unidades administrativas', 'en': '- Spatial aggregation by admin units'},
+    
+    'lim_1': {'es': '- 10.4% de registros DGA tienen errores de ubicación', 'en': '- 10.4% of DGA records have location errors'},
+    'lim_2': {'es': '- Datos censales son auto-reportados', 'en': '- Census data is self-reported'},
+    'lim_3': {'es': '- Cobertura de piezómetros es desigual', 'en': '- Piezometer coverage is uneven'},
+    
+    'final_disclaimer': {
+        'es': '<b>Descargo de responsabilidad:</b> Este panel presenta análisis de datos públicos con fines educativos y de investigación. Los hallazgos deben ser verificados con fuentes oficiales antes de tomar decisiones de política o gestión.',
+        'en': '<b>Disclaimer:</b> This dashboard presents analysis of publicly available data for research and educational purposes. The findings should be verified with official sources before making policy or management decisions.'
+    }
 }
 
 # ============================================================
@@ -1416,8 +1462,9 @@ def main():
             <div class="critical-box">
                 <h4>{TRANS['data_quality'][lang]}</h4>
                 <ul>
-                    <li>{TRANS['data_quality_text'][lang]}</li>
-                    <li>7,233 wells plotted outside Chilean territory</li>
+                    <li>{TRANS['dq_b1'][lang]}</li>
+                    <li>{TRANS['dq_b2'][lang]}</li>
+                    <li>{TRANS['dq_b3'][lang]}</li>
                 </ul>
             </div>
             """, unsafe_allow_html=True)
@@ -1426,8 +1473,9 @@ def main():
             <div class="critical-box">
                 <h4>{TRANS['extraction_gap'][lang]}</h4>
                 <ul>
-                    <li>~154,000 unregistered extraction points nationally</li>
-                    <li>70.7% of census-reported wells not in DGA registry</li>
+                    <li>{TRANS['gap_b1'][lang]}</li>
+                    <li>{TRANS['gap_b2'][lang]}</li>
+                    <li>{TRANS['gap_b3'][lang]}</li>
                 </ul>
             </div>
             """, unsafe_allow_html=True)
@@ -1437,9 +1485,9 @@ def main():
             <div class="critical-box">
                 <h4>{TRANS['depletion'][lang]}</h4>
                 <ul>
-                    <li>87.1% of monitored wells show declining trends</li>
-                    <li>Mean decline rate: 0.24 m/year</li>
-                    <li>Maximum decline: 4.24 m/year (unsustainable)</li>
+                    <li>{TRANS['dep_b1'][lang]}</li>
+                    <li>{TRANS['dep_b2'][lang]}</li>
+                    <li>{TRANS['dep_b3'][lang]}</li>
                 </ul>
             </div>
             """, unsafe_allow_html=True)
@@ -1448,8 +1496,9 @@ def main():
             <div class="critical-box">
                 <h4>{TRANS['trajectory'][lang]}</h4>
                 <ul>
-                    <li>Groundwater dependence increased 3.6% (2017-2024)</li>
-                    <li>Peri-urban zones show >80% increases</li>
+                    <li>{TRANS['traj_b1'][lang]}</li>
+                    <li>{TRANS['traj_b2'][lang]}</li>
+                    <li>{TRANS['traj_b3'][lang]}</li>
                 </ul>
             </div>
             """, unsafe_allow_html=True)
@@ -1753,14 +1802,16 @@ def main():
                         # Summary statistics
                         col_a, col_b, col_c = st.columns(3)
                         
+                        trend_label = "Tendencia" if lang == 'es' else "Trend"
+                        
                         with col_a:
-                            st.metric("Trend", f"{slope:+.4f} m/yr")
+                            st.metric(trend_label, f"{slope:+.4f} m/yr")
                         
                         with col_b:
-                            st.metric("R² Value", f"{r2:.4f}")
+                            st.metric("R²", f"{r2:.4f}")
                         
                         with col_c:
-                            st.metric("Data Points", n_points)
+                            st.metric("N", n_points)
                         
                         # Interpretation
                         st.markdown("---")
@@ -1913,8 +1964,8 @@ def main():
         <div class="disclaimer-box">
             <h4>{TRANS['disclaimer'][lang]}</h4>
             <ul>
-                <li>DGA Water Rights geolocation may have errors.</li>
-                <li>Census points are randomized within units (5m radius).</li>
+                <li>{TRANS['map_disclaimer_text_1'][lang]}</li>
+                <li>{TRANS['map_disclaimer_text_2'][lang]}</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
@@ -1999,34 +2050,30 @@ def main():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown("""
-        ### 📚 Data Sources
-        - **DGA**: Dirección General de Aguas
-        - **INE Census**: Instituto Nacional de Estadísticas
-        """)
+        st.markdown(TRANS['footer_sources'][lang])
+        st.markdown(TRANS['src_dga'][lang])
+        st.markdown(TRANS['src_ine17'][lang])
+        st.markdown(TRANS['src_ine24'][lang])
     
     with col2:
-        st.markdown("""
-        ### 🔬 Methodology
-        - Linear regression for trend analysis
-        - Consensus-based classification
-        - Spatial aggregation
-        """)
+        st.markdown(TRANS['footer_method'][lang])
+        st.markdown(TRANS['met_1'][lang])
+        st.markdown(TRANS['met_2'][lang])
+        st.markdown(TRANS['met_3'][lang])
     
     with col3:
-        st.markdown("""
-        ### ⚠️ Limitations
-        - Census data is self-reported
-        - Piezometer coverage is uneven
-        """)
+        st.markdown(TRANS['footer_limit'][lang])
+        st.markdown(TRANS['lim_1'][lang])
+        st.markdown(TRANS['lim_2'][lang])
+        st.markdown(TRANS['lim_3'][lang])
     
     st.markdown("---")
     
     # Final disclaimer
-    st.markdown("""
+    disclaimer_text = TRANS['final_disclaimer'][lang]
+    st.markdown(f"""
     <div style="text-align: center; color: #666; font-size: 0.85rem; padding: 20px;">
-        <b>Disclaimer:</b> This dashboard presents analysis of publicly available data for research and educational purposes. 
-        The findings should be verified with official sources before making policy or management decisions.<br><br>
+        {disclaimer_text}<br><br>
         <b>Chile Groundwater Assessment Dashboard</b> | Colorado School of Mines | 2024
     </div>
     """, unsafe_allow_html=True)
