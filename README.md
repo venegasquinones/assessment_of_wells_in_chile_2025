@@ -1,38 +1,63 @@
-# 💧 Groundwater Rights and Trends Analysis in Chile
+# Groundwater Rights and Trends Analysis in Chile
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
-[![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange.svg)](https://jupyter.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+This repository contains a suite of Jupyter Notebooks designed to analyze groundwater management in Chile. The analysis integrates data from the **Dirección General de Aguas (DGA)**, **Census households (2017 & 2024)**, and **piezometric monitoring stations** to assess water rights allocation, water source dependencies, and groundwater level trends.
 
-A comprehensive suite of Jupyter Notebooks for analyzing groundwater management in Chile, integrating data from the **Dirección General de Aguas (DGA)**, **Census households (2017 & 2024)**, and **piezometric monitoring stations**.
+## Project Overview
 
----
+The goal of this project is to provide a comprehensive view of groundwater usage and availability. The workflow includes:
+1.  **Cleaning and Validating** government water rights records (DGA).
+2.  **Spatial Analysis** to link water rights with administrative and hydrological units (communes, basins, aquifers).
+3.  **Socio-economic Analysis** comparing allocated rights with census-reported water sources (wells vs. network vs. trucks).
+4.  **Trend Analysis & Forecasting** using statistical tests (Mann-Kendall) and machine learning models (LSTM, ARIMA, Prophet) to predict future groundwater levels.
 
-## 📋 Table of Contents
+## Repository Structure
 
-- [Project Overview](#-project-overview)
-- [Repository Structure](#-repository-structure)
-- [Installation](#-installation)
-- [Usage](#-usage)
-- [Data Sources](#-data-sources)
-- [Dependencies](#-dependencies)
-- [Results](#-results)
-- [Contributing](#-contributing)
-- [License](#-license)
+The core analysis is divided into 6 sequential notebooks:
 
----
+### 1. [Checking DGA Records](./1_Checking_DGA_Records.ipynb)
+*   **Purpose:** Preprocessing raw DGA Excel records.
+*   **Key Operations:** Use of regex for text cleaning, coordinate conversion (UTM to WGS84), and spatial validation against Chile's national boundaries.
+*   **Output:** A clean dataset of valid underground water rights.
 
-## 🎯 Project Overview
+### 2. [DGA Analysis](./2_DGA_Analysis.ipynb)
+*   **Purpose:** Detailed spatial and temporal analysis of the cleaned DGA data.
+*   **Key Operations:** Spatial joins with regions/basins, calculation of flow statistics (l/s), and identification of peak allocation years.
+*   **Output:** Statistical summaries and shapefiles of water rights distributions.
 
-This project provides a comprehensive view of groundwater usage and availability in Chile through:
+### 3. [Census 2017/2024 Analysis](./3_Census_2017_2024_Analysis.ipynb)
+*   **Purpose:** Evaluating household water sources using Census microdata.
+*   **Key Operations:** Comparison of 2017 vs 2024 data, analysis of "Public Network" vs "Well" vs "Water Truck" dependency, and identification of water stress hotspots.
 
-| Phase | Description |
-|-------|-------------|
-| 🧹 **Data Cleaning** | Validating government water rights records (DGA) |
-| 🗺️ **Spatial Analysis** | Linking water rights with administrative and hydrological units |
-| 📊 **Socio-economic Analysis** | Comparing allocated rights with census-reported water sources |
-| 📈 **Trend Analysis & Forecasting** | Using Mann-Kendall tests and ML models (LSTM, ARIMA, Prophet) |
+### 4. [Water Consumption Estimation](./4_Water_Consumption_Estimation.ipynb)
+*   **Purpose:** Bridging the gap between legal rights (DGA) and actual usage (Census).
+*   **Key Operations:** Calculating the delta between allocated rights and census-reported wells at the block level.
 
----
+### 5. [Evaluation Trends and Forecast](./5_Evaluation_Trends_and_Forecast.ipynb)
+*   **Purpose:** Benchmarking forecasting models for groundwater levels.
+*   **Key Operations:** Training and testing ARIMA, Holt-Winters, LSTM, BiLSTM, and Prophet models. Generating performance metrics (RMSE, MAE).
 
-## 📁 Repository Structure
+### 6. [Trends Assessment](./6_Trends_Assesment.ipynb)
+*   **Purpose:** Final production run for trend assessment.
+*   **Key Operations:** Applying the best-performing models to generate forecasts up to 2030 and mapping regional trends.
+
+## Dependencies
+
+The analysis requires the following Python libraries:
+
+*   **Data Analysis:** `pandas`, `numpy`, `scipy`
+*   **Geospatial:** `geopandas`, `shapely`
+*   **Machine Learning:** `tensorflow` (Keras), `sklearn`, `prophet`
+*   **Trend Analysis:** `pymannkendall`
+*   **Visualization:** `matplotlib`, `seaborn` (optional)
+*   `openpyxl` (for reading Excel files)
+
+## Data Sources
+
+*   **DGA:** Water rights records (`DerechosConcedidos.xlsx`).
+*   **INE (Census):** Block-level census data for 2017 and 2024.
+*   **DGA (Piezometry):** Groundwater level monitoring station data.
+*   **BCN:** Library of National Congress (spatial reference layers for Chile).
+
+## Usage
+
+It is recommended to run the notebooks in numerical order (1 through 6), as later notebooks rely on the cleaned datasets and shapefiles generated by the earlier ones.
