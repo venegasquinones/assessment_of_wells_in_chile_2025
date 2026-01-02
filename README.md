@@ -19,24 +19,24 @@ The core analysis is divided into 6 sequential notebooks:
 *   **Key Operations:** Use of regex for text cleaning, coordinate conversion (UTM to WGS84), and spatial validation against Chile's national boundaries.
 *   **Output:** A clean dataset of valid underground water rights.
 
-### 2. [DGA Analysis](./2_DGA_Analysis.ipynb)
+### 2. [DGA Analysis](Notebooks/2_DGA_Analysis.ipynb)
 *   **Purpose:** Detailed spatial and temporal analysis of the cleaned DGA data.
 *   **Key Operations:** Spatial joins with regions/basins, calculation of flow statistics (l/s), and identification of peak allocation years.
 *   **Output:** Statistical summaries and shapefiles of water rights distributions.
 
-### 3. [Census 2017/2024 Analysis](./3_Census_2017_2024_Analysis.ipynb)
+### 3. [Census 2017/2024 Analysis](Notebooks/3_Census_2017_2024_Analysis.ipynb)
 *   **Purpose:** Evaluating household water sources using Census microdata.
 *   **Key Operations:** Comparison of 2017 vs 2024 data, analysis of "Public Network" vs "Well" vs "Water Truck" dependency, and identification of water stress hotspots.
 
-### 4. [Water Consumption Estimation](./4_Water_Consumption_Estimation.ipynb)
+### 4. [Water Consumption Estimation](Notebooks/4_Water_Consumption_Estimation.ipynb)
 *   **Purpose:** Bridging the gap between legal rights (DGA) and actual usage (Census).
 *   **Key Operations:** Calculating the delta between allocated rights and census-reported wells at the block level.
 
-### 5. [Evaluation Trends and Forecast](./5_Evaluation_Trends_and_Forecast.ipynb)
+### 5. [Evaluation Trends and Forecast](Notebooks/5_Evaluation_Trends_and_Forecast.ipynb)
 *   **Purpose:** Benchmarking forecasting models for groundwater levels.
 *   **Key Operations:** Training and testing ARIMA, Holt-Winters, LSTM, BiLSTM, and Prophet models. Generating performance metrics (RMSE, MAE).
 
-### 6. [Trends Assessment](./6_Trends_Assesment.ipynb)
+### 6. [Trends Assessment](Notebooks/6_Trends_Assesment.ipynb)
 *   **Purpose:** Final production run for trend assessment.
 *   **Key Operations:** Applying the best-performing models to generate forecasts up to 2030 and mapping regional trends.
 
