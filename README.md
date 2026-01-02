@@ -14,7 +14,7 @@ The goal of this project is to provide a comprehensive view of groundwater usage
 
 The core analysis is divided into 6 sequential notebooks:
 
-### 1. [Checking DGA Records](./1_Checking_DGA_Records.ipynb)
+### 1. [Checking DGA Records](Notebooks/1_Checking_DGA_Records.ipynb)
 *   **Purpose:** Preprocessing raw DGA Excel records.
 *   **Key Operations:** Use of regex for text cleaning, coordinate conversion (UTM to WGS84), and spatial validation against Chile's national boundaries.
 *   **Output:** A clean dataset of valid underground water rights.
