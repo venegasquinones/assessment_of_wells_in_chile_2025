@@ -412,8 +412,8 @@ def load_dga_water_rights(file_path=None):
                 # Rename columns for easier access
                 df = df.rename(columns={
                     'Código de Expediente': 'Expediente_Code',
-                    'lat_wgs84_final': 'Latitude',
-                    'lon_wgs84_final': 'Longitude',
+                    'lat_wgs84': 'Latitude',
+                    'lon_wgs84': 'Longitude',
                     'Caudal Anual Prom': 'Annual_Flow',
                     'Unidad de Caudal': 'Flow_Unit',
                     'Región': 'Region',
